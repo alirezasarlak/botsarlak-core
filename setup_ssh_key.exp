@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+spawn ssh ali@91.107.128.14
+
+expect "password:"
+send "ali456456\r"
+
+expect "$ "
+send "mkdir -p ~/.ssh\r"
+
+expect "$ "
+send "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC6HknPY8tbKA8sIUrs1OvXF3LbJLqwed6Femq3qTC9db36OZBTX41rLyLGHSHbiYuyqbQuGlfzGdNR0Oq0kZV7ltEUsrMEUKau1cA/ZFy/OSMUPABslUE+0nm+2cZJsoyBq6RAIudCbNlwwv8JbSFhlc60wU+TrxGetjVj+ougmuOTrJCvtfxfH2u29Sr6w5SzmKQjJnDPjFDW7G8UiosW9/lm7MOe9qqQGzou/SYAn3TCcQFCugoNYl/kQe9Hr5gZH+tfx5tlKXmAsYnXLqxw1c33EJ8OZdYk5MHlMzf0WULqRb8hTG9U7pS7nel9qP6o/4oskEHv+OMVMCY4H3iQo2zJFIYdPqdOJIzTLLzbThzgd8fm/kd0g+6J8XrBO0VTFSYPaq0GTtXmjzyjSbesmJvuPzYgB0bHtgHgGRdXz1Y0ukX7C9hjDXxhSuGnnXv7mFP/lZPTehSUlO1NIZ+rpovtqfroJkjGY0Uu+IDhj2gTWVYRpu8+l6BZlJcR1/j/WN5l3VCOO7q4WSgWqHkSMoq4fRN4T/ZofP8K+1OiMuIxeFoQxslMOL6CM719GckTLV3oDLIxEqvm7nqTzhfC6qY9W0kWGRKka253o7vFnj92QgoiuWG8tHWpymt+IWeU8KpJRDFNEDSn5eFUmQGDQDRadfIjPaE/2BTHBehs4w== alireza@alirezas-MacBook-Pro.local' >> ~/.ssh/authorized_keys\r"
+
+expect "$ "
+send "chmod 700 ~/.ssh\r"
+
+expect "$ "
+send "chmod 600 ~/.ssh/authorized_keys\r"
+
+expect "$ "
+send "ls -la ~/.ssh/\r"
+
+expect "$ "
+send "exit\r"
+
+interact

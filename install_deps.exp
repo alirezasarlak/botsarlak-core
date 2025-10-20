@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+
+set timeout 60
+spawn ssh sarlak-server
+
+expect "$ "
+send "sudo apt update\r"
+
+expect "password for ali:"
+send "ali456\r"
+
+expect "$ "
+send "sudo apt install -y python3-pip python3-venv git postgresql postgresql-contrib nginx supervisor htop nano curl wget\r"
+
+expect "password for ali:"
+send "ali456\r"
+
+expect "$ "
+send "python3 --version\r"
+
+expect "$ "
+send "pip3 --version\r"
+
+expect "$ "
+send "git --version\r"
+
+expect "$ "
+send "postgresql --version\r"
+
+expect "$ "
+send "exit\r"
+
+interact

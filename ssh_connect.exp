@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+spawn ssh ali@91.107.128.14
+
+expect "password:"
+send "ali456456\r"
+
+expect "$ "
+send "whoami\r"
+
+expect "$ "
+send "pwd\r"
+
+expect "$ "
+send "ls -la\r"
+
+expect "$ "
+send "exit\r"
+
+interact

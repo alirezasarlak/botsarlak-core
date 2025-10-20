@@ -1,0 +1,13 @@
+[Unit]
+Description=Sarlak Academy Telegram Bot v6.1
+After=network.target
+
+[Service]
+User=ali
+WorkingDirectory=/home/ali/sarlakbot
+EnvironmentFile=/home/ali/sarlakbot/.env
+ExecStart=/home/ali/sarlakbot/venv/bin/python /home/ali/sarlakbot/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

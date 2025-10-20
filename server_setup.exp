@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+spawn ssh ali@91.107.128.14
+
+expect "password:"
+send "ali456456\r"
+
+expect "$ "
+send "sudo apt update && sudo apt upgrade -y\r"
+
+expect "$ "
+send "python3 --version\r"
+
+expect "$ "
+send "pip3 --version\r"
+
+expect "$ "
+send "git --version\r"
+
+expect "$ "
+send "sudo systemctl status ssh\r"
+
+expect "$ "
+send "df -h\r"
+
+expect "$ "
+send "free -h\r"
+
+expect "$ "
+send "exit\r"
+
+interact

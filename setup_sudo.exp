@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+spawn ssh sarlak-server
+
+expect "$ "
+send "sudo visudo\r"
+
+expect "password for ali:"
+send "ali456\r"
+
+expect "visudo:"
+send "G\r"
+
+expect "visudo:"
+send "o\r"
+
+expect "visudo:"
+send "ali ALL=(ALL) NOPASSWD: ALL\r"
+
+expect "visudo:"
+send "\x1b\r"
+
+expect "visudo:"
+send ":wq\r"
+
+expect "$ "
+send "sudo whoami\r"
+
+expect "$ "
+send "exit\r"
+
+interact
