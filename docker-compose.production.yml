@@ -1,0 +1,196 @@
+# Sarlak Academy Bot - Production Docker Compose Configuration
+# Updated with production credentials and optimized settings
+
+version: '3.8'
+
+services:
+  # Main Bot Application
+  sarlak-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: sarlak-bot
+    restart: unless-stopped
+    environment:
+      # Bot Configuration
+      - BOT_TOKEN=7214099093:AAEqEOo2z_iOCo8jDmrw4ZX5FQn3qCjh61k
+      - ADMIN_ID=694245594
+      - BOT_NAME=Sarlak Academy
+      - BOT_USERNAME=@SarlakAcademyBot
+      
+      # Database Configuration
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=sarlak_academy
+      - DB_USER=postgres
+      - DB_PASSWORD=ali123123
+      
+      # AI Integration
+      - OPENAI_API_KEY=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
+      
+      # Application Settings
+      - TIMEZONE=Asia/Tehran
+      - LOG_LEVEL=INFO
+      - LOG_FILE=bot.log
+      - DAILY_REPORT_BONUS=10
+      - STREAK_MULTIPLIER=5
+      - LEVEL_UP_THRESHOLD=100
+      
+    volumes:
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - sarlak-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: sarlak-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=sarlak_academy
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=ali123123
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    networks:
+      - sarlak-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sarlak_academy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  # Redis Cache (for rate limiting and caching)
+  redis:
+    image: redis:7-alpine
+    container_name: sarlak-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - sarlak-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+
+  # Health & Monitoring Service (FastAPI)
+  health:
+    image: python:3.11-slim
+    container_name: sarlak-health
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir fastapi uvicorn asyncpg && uvicorn src.monitoring.health:app --host 0.0.0.0 --port 8080"
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=sarlak_academy
+      - DB_USER=postgres
+      - DB_PASSWORD=ali123123
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sarlak-network
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: sarlak-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - sarlak-bot
+      - health
+    networks:
+      - sarlak-network
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.1'
+        reservations:
+          memory: 64M
+          cpus: '0.05'
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  sarlak-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+
+
+

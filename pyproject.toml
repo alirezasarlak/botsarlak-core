@@ -1,103 +1,103 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "sarlakbot"
-version = "6.1.0"
-description = "SarlakBot v6 Full - Ultimate Telegram Bot"
-authors = [{name = "Sarlak Team", email = "team@sarlak.com"}]
+version = "3.0.0"
+description = "Professional Educational Telegram Bot for Iranian Students | Sarlak Academy"
+authors = [
+    { name = "Sarlak Academy Team", email = "info@sarlak.academy" }
+]
 readme = "README.md"
-requires-python = ">=3.8"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["telegram", "education", "bot", "konkur", "ai", "sarlak", "academy"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Communications :: Chat",
+    "Topic :: Education",
+    "Topic :: Software Development :: Libraries :: Application Frameworks"
 ]
+
+dependencies = [
+    "python-telegram-bot>=21.0",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.9",
+    "alembic>=1.13.2",
+    "redis>=6.4.0",
+    "pydantic>=2.12.3",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.0",
+    "structlog>=24.1.0",
+    "rich>=14.2.0",
+    "cryptography>=42.0.5",
+    "tenacity>=8.3.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=25.9.0",
+    "ruff>=0.14.1",
+    "flake8>=7.1.0",
+    "mypy>=1.18.2",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=0.23.8",
+    "pytest-cov>=6.0.0",
+    "pre-commit>=4.3.0",
+    "bandit>=1.8.6",
+    "safety>=3.6.2",
+    "isort>=5.13.2",
+    "types-requests",
+    "types-redis",
+    "types-python-dateutil"
+]
+
+[project.urls]
+Homepage = "https://sarlak.academy"
+Repository = "https://github.com/alirezasarlak/botsarlak-core"
+Documentation = "https://docs.sarlak.academy"
+"Bug Tracker" = "https://github.com/alirezasarlak/botsarlak-core/issues"
 
 [tool.black]
-line-length = 88
-target-version = ['py38', 'py39', 'py310', 'py311']
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
-  \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+line-length = 100
+target-version = ['py311']
+skip-string-normalization = false
 
 [tool.ruff]
-target-version = "py38"
-line-length = 88
-select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "UP", # pyupgrade
-]
-ignore = [
-    "E501",  # line too long, handled by black
-    "B008",  # do not perform function calls in argument defaults
-    "C901",  # too complex
+line-length = 100
+target-version = "py311"
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+    "build",
+    "dist",
+    "migrations"
 ]
 
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "ASYNC", "S", "UP", "C4", "Q"]
+ignore = ["E501", "E731", "B905"]
+fixable = ["ALL"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+use_parentheses = true
 
 [tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
-
-[[tool.mypy.overrides]]
-module = [
-    "telegram.*",
-    "psycopg2.*",
-    "jdatetime.*",
-]
+python_version = "3.11"
 ignore_missing_imports = true
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py", "*_test.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = [
-    "--strict-markers",
-    "--strict-config",
-    "--verbose",
-    "--tb=short",
-]
-markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
-]
+strict_optional = true
+warn_unused_ignores = true

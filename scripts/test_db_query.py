@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+"""
+Test database query
+"""
+
+import asyncio
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.database.connection import db_manager
+
+async def test():
+    try:
+        await db_manager.initialize()
+        
+        # Test with correct syntax
+        query = "SELECT * FROM user_profiles WHERE user_id = $1"
+        
+        result = await db_manager.fetch_one(query, 694245594)
+        if result:
+            print(f"✅ Query works: {result['display_name']}")
+        else:
+            print("❌ Query failed: No result")
+        
+        await db_manager.close()
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(test())
+
