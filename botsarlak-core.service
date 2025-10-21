@@ -1,0 +1,27 @@
+[Unit]
+Description=SarlakBot v6 Full Telegram Bot
+After=network.target postgresql.service redis-server.service
+Wants=postgresql.service redis-server.service
+
+[Service]
+Type=simple
+User=ali
+Group=ali
+WorkingDirectory=/home/ali/botsarlak-core
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=PYTHONPATH=/home/ali/botsarlak-core
+ExecStart=/usr/bin/python3 /home/ali/botsarlak-core/main.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/ali/botsarlak-core
+
+[Install]
+WantedBy=multi-user.target

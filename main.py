@@ -29,12 +29,11 @@ from src.handlers.admin.ops_handler import ops_handler
 from src.handlers.ai_coach.ai_coach_integration import ai_coach_integration
 from src.handlers.league.league_handler import LeagueHandler
 from src.handlers.main_menu.handler import MainMenuHandler
-from src.handlers.onboarding import onboarding_handler
-from src.handlers.profile.profile_handler_v3 import ProfileHandlerV3
 from src.handlers.qa.qa_handler import qa_handler
 from src.handlers.referral.handler import ReferralHandler
 from src.handlers.report.report_handler import ReportHandler
-from src.handlers.start import StartHandler
+from src.handlers.start_handler import start_handler
+from src.handlers.profile_creation_handler import profile_creation_handler
 from src.utils.logging import get_logger, setup_logging
 
 # from src.monitoring.system_monitor import system_monitor
@@ -59,12 +58,11 @@ class SarlakBot:
         self.logger = get_logger(__name__)
 
         # Initialize handlers
-        self.start_handler = StartHandler()
-        self.onboarding_handler = onboarding_handler
+        self.start_handler = start_handler
+        self.profile_creation_handler = profile_creation_handler
         self.main_menu_handler = MainMenuHandler()
         self.admin_handler = AdminHandler()
         self.ops_handler = ops_handler
-        self.profile_handler_v3 = ProfileHandlerV3()
         self.qa_handler = qa_handler
         self.referral_handler = ReferralHandler()
         self.report_handler = ReportHandler()
@@ -126,19 +124,14 @@ class SarlakBot:
             await self.start_handler.register(self.application)
             self.logger.info("✅ Start handler registered")
 
-            # Register onboarding handler
-            await self.onboarding_handler.register(self.application)
-            self.logger.info("✅ Onboarding handler registered")
+            # Register profile creation handler
+            await self.profile_creation_handler.register(self.application)
+            self.logger.info("✅ Profile creation handler registered")
 
             # Register main menu handler
             if self.config.features.profile_v1:
                 await self.main_menu_handler.register(self.application)
                 self.logger.info("✅ Main menu handler registered")
-
-            # Register profile handler
-            if self.config.features.profile_v1:
-                await self.profile_handler_v3.register(self.application)
-                self.logger.info("✅ Profile Handler V3 registered")
 
             # Register Q&A handler
             await self.qa_handler.register(self.application)
@@ -202,10 +195,12 @@ class SarlakBot:
             # Keep the bot running
             self.logger.info("🚀 Starting polling...")
             
-            # Start polling without await
-            self.application.updater.start_polling(
-                drop_pending_updates=True, 
-                allowed_updates=Update.ALL_TYPES
+            # Start polling in background task
+            polling_task = asyncio.create_task(
+                self.application.updater.start_polling(
+                    drop_pending_updates=True, 
+                    allowed_updates=Update.ALL_TYPES
+                )
             )
             
             # Keep running indefinitely
@@ -215,6 +210,7 @@ class SarlakBot:
                     await asyncio.sleep(1)
             except KeyboardInterrupt:
                 self.logger.info("🛑 Received interrupt signal")
+                polling_task.cancel()
 
         except Exception as e:
             self.logger.error(f"❌ SarlakBot startup failed: {e}")
