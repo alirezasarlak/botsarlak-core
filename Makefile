@@ -54,3 +54,36 @@ pre-commit: ## Install pre-commit hooks
 dev-setup: setup install-dev pre-commit ## Complete development setup
 	@echo "Development environment ready!"
 	@echo "Activate with: source .venv/bin/activate"
+
+# Automation and Audit Commands
+audit: ## Run comprehensive audit analysis
+	python scripts/audit_analyzer.py
+
+audit-report: ## Generate audit report
+	python scripts/generate_audit_report.py
+
+monitor: ## Start continuous monitoring
+	python scripts/continuous_monitor.py
+
+monitor-stats: ## Show monitoring statistics
+	python scripts/continuous_monitor.py --stats
+
+pre-commit-install: ## Install pre-commit hooks
+	pre-commit install
+	pre-commit install --hook-type commit-msg
+
+pre-commit-run: ## Run pre-commit on all files
+	pre-commit run --all-files
+
+pre-commit-update: ## Update pre-commit hooks
+	pre-commit autoupdate
+
+# Full automation pipeline
+automation: format lint type-check test audit audit-report ## Run complete automation pipeline
+	@echo "🤖 Complete automation pipeline finished!"
+
+# GitHub Actions simulation
+github-actions: ## Simulate GitHub Actions locally
+	@echo "🚀 Running GitHub Actions simulation..."
+	make automation
+	@echo "✅ GitHub Actions simulation completed!"

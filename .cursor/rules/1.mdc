@@ -1,0 +1,132 @@
+# ===========================================================
+# 📜 PROJECT CONFIGURATION – SARLAKBOT V6 FULL DEV PROTOCOL
+# ===========================================================
+project_root: "/Users/alireza/SarlakBot_v6_Full"
+project_name: "SarlakBot_v6_Full"
+version: "6.1.0"
+maintainer: "Dr. Alireza Sarlak"
+description: |
+  Ultimate Telegram bot for Sarlak Academy with complete league systems, competition features, and study management.
+  Built with Python 3.9+, PostgreSQL, comprehensive testing, and full CI/CD automation.
+  Core modules: League V3, Competition System v2.6, flashcards, missions, referrals, and advanced reporting.
+
+# ===========================================================
+# 🧱 PROJECT STRUCTURE
+# ===========================================================
+directories:
+  app: "Main application source code with handlers, models, services, utils"
+  scripts: "Developer tools, deployment, and automation scripts"
+  tests: "Pytest unit/integration tests with comprehensive coverage"
+  migrations: "Database migrations and schema updates"
+  .github/workflows: "CI/CD pipelines and quality automation"
+  docs: "Auto-generated technical documentation and version reports"
+  .venv: "Python virtual environment for development"
+
+# ===========================================================
+# ⚙️ DEVELOPMENT PRINCIPLES
+# ===========================================================
+dev_rules:
+  - Always keep code deployable and validated locally.
+  - For every change:
+      * Run: `make check` (black, ruff, mypy, pytest)
+      * Run: `source .venv/bin/activate && pytest -v`
+      * Run: `ruff check . --fix`
+  - After successful checks:
+      * Auto-update `CHANGELOG.md` with diff summary
+      * Append to `DOCUMENTATION.md` and `VERSION_HISTORY.md`
+      * If version bump detected → create new version report
+  - Never commit if:
+      * MyPy detects critical type errors
+      * Pytest fails on core functionality
+      * Ruff finds unfixable linting issues
+      * Black formatting fails
+
+# ===========================================================
+# 🧠 CURSOR BEHAVIOR
+# ===========================================================
+cursor_actions:
+  - On file save:
+      1. Sync latest branch: `git pull origin main`
+      2. Run full validation (black, ruff, mypy, pytest)
+      3. Fix style issues automatically if safe
+      4. Log summary to `.cursor-metrics.log`
+  - On detected bug or lint error:
+      * Suggest fix inline in code review mode
+      * If auto-fixable → apply immediately
+      * Run `make lint-fix` for automatic fixes
+  - On new commit:
+      * Generate commit message as:  
+        `"🧩 [v{version}] {short_description}"`
+      * Update documentation automatically
+
+# ===========================================================
+# 🧩 VERSIONING & TRACKING
+# ===========================================================
+versioning:
+  auto_increment: true
+  commit_format: "🧩 [v{version}] {summary}"
+  tag_release: true
+  tag_command: |
+    git tag -a v{version} -m "Release v{version}"
+    git push origin --tags
+  changelog_file: "CHANGELOG.md"
+  reports:
+    - "📝_VERSION_{version}_REPORT.md"
+    - "📋_DEPLOYMENT_GUIDE.md"
+
+# ===========================================================
+# 🧠 GPT INTEGRATION (AUDITOR)
+# ===========================================================
+gpt_assistant:
+  name: "SarlakBot Dev & Data Assistant"
+  purpose: "Monitor commits, detect logical bugs, analyze data models, and ensure quality."
+  tasks:
+    - Monitor every GitHub push on `main` or `dev`
+    - Compare current commit vs previous commit
+    - Analyze:
+        * Logic flow consistency
+        * Missing error handling
+        * Data validation gaps
+        * Anti-fraud logic consistency
+        * Persian text & encoding
+        * Performance bottlenecks
+    - Summarize as markdown in this format:
+        ## 🧩 Audit Report
+        - File: {filename}
+        - Issues: {count}
+        - Suggestions: {fix_summary}
+    - Automatically open a GitHub Issue if any Critical issues exist
+
+# ===========================================================
+# 🛠 GITHUB AUTOMATION
+# ===========================================================
+github_integration:
+  repo: "https://github.com/alirezasarlak/botsarlak-core"
+  actions:
+    - "🧠 Code Quality & Persian Validation"
+    - "Test & Deploy Pipeline"
+  on_push:
+    - Run: "pre-commit run --all-files"
+    - Run: "pytest -q"
+    - Run: "python scripts/check_persian_text.py $(find src -name '*.py')"
+    - Collect logs, summarize, commit results to `/docs/AUTO_AUDIT_REPORTS/`
+  notify:
+    - "Telegram Admin: 694245594 (Dr. Alireza Sarlak)"
+    - "Log summary in .cursor-metrics.log"
+
+# ===========================================================
+# 🔁 CONTINUOUS IMPROVEMENT LOOP
+# ===========================================================
+loop_process:
+  - Step 1: Cursor analyzes new commits & logs issues
+  - Step 2: GPT Auditor summarizes and compares trends
+  - Step 3: If repeated issues occur → mark as “Recurring Bug Pattern”
+  - Step 4: Cursor suggests or applies permanent fixes
+  - Step 5: Push changes, regenerate documentation, and close related GitHub issues
+
+# ===========================================================
+# ✅ END OF CONFIG
+# ===========================================================
+---
+alwaysApply: true
+---

@@ -1,0 +1,1601 @@
+# 🧠 SarlakBot v6 Full - Comprehensive Audit Report
+
+**Generated:** 2025-10-21T14:58:35.831132  
+**Project:** SarlakBot v6 Full  
+**Version:** 6.1.0
+
+## 📋 Executive Summary
+
+This comprehensive audit report provides a detailed analysis of the SarlakBot v6 Full codebase, including code quality, security, performance, and documentation assessments.
+
+## 🔍 Detailed Analysis
+
+### 🎨 Code Quality Analysis
+
+#### ❌ Black
+**Status:** fail
+
+**Details:**
+```
+--- /Users/alireza/SarlakBot_v6_Full/app/handlers/admin.py	2025-10-08 09:43:08.018476+00:00
++++ /Users/alireza/SarlakBot_v6_Full/app/handlers/admin.py	2025-10-21 11:28:37.318101+00:00
+@@ -1,18 +1,20 @@
+ from telegram.ext import ConversationHandler, MessageHandler, filters
+ from app.config import Config
+ from app.keyboards import main_menu
+ from app.utils.i18n import t
+ from app.constants import btn_rx, back_home_rx
++
+ 
+ async def entry(update, context):
+     if update.effective_user.id != Config.ADMIN_ID:
+         await update.message.reply_text(t("admin_denied"), reply_markup=main_menu())
+         return ConversationHandler.END
+     await update.message.reply_text(t("admin_menu"), reply_markup=main_menu())
+     return ConversationHandler.END
+ 
++
+ admin_conv = ConversationHandler(
+-    entry_points=[MessageHandler(filters.Regex(btn_rx("پنل ادمین","🛠")), entry)],
++    entry_points=[MessageHandler(filters.Regex(btn_rx("پنل ادمین", "🛠")), entry)],
+     states={},
+     fallbacks=[MessageHa
+```
+
+#### ⚠️ Ruff
+**Status:** warn
+
+**Details:**
+```
+[1m117[0m	[1;31mW293 [0m	[[36m*[0m] blank-line-with-whitespace
+[1m 34[0m	[1;31mI001 [0m	[[36m*[0m] unsorted-imports
+[1m 11[0m	[1;31mF401 [0m	[ ] unused-import
+[1m  7[0m	[1;31mUP015[0m	[[36m*[0m] redundant-open-modes
+[1m  6[0m	[1;31mE702 [0m	[ ] multiple-statements-on-one-line-semicolon
+[1m  5[0m	[1;31mE701 [0m	[ ] multiple-statements-on-one-line-colon
+[1m  4[0m	[1;31mW291 [0m	[ ] trailing-whitespace
+[1m  3[0m	[1;31mE402 [0m	[ ] module-import-not-at-top-of-file
+[1m  1[0m	[1;31mE401 [0m	[[36m*[0m] multiple-imports-on-one-line
+[1m  1[0m	[1;31mE722 [0m	[ ] bare-except
+[1m  1[0m	[1;31mF811 [0m	[[36m*[0m] redefined-while-unused
+[1m  1[0m	[1;31mF841 [0m	[[36m*[0m] unused-variable
+Found 191 errors.
+[[36m*[0m] 171 fixable with the `--fix` option (4 hidden fixes can be enabled with the `--unsafe-fixes` option).
+
+```
+
+#### ⚠️ Mypy
+**Status:** warn
+
+**Details:**
+```
+app/constants.py:35: error: Function is missing a return type annotation  [no-untyped-def]
+app/constants.py:39: error: Function is missing a return type annotation  [no-untyped-def]
+app/constants.py:52: error: Function is missing a return type annotation  [no-untyped-def]
+app/utils/i18n.py:26: error: Function is missing a type annotation  [no-untyped-def]
+app/config.py:7: error: Argument 1 to "int" has incompatible type "Optional[str]"; expected "Union[str, Buffer, SupportsInt, SupportsIndex, SupportsTrunc]"  [arg-type]
+app/config.py:17: error: Function is missing a return type annotation  [no-untyped-def]
+app/config.py:17: note: Use "-> None" if function does not return a value
+app/utils/time_utils.py:7: error: Function is missing a return type annotation  [no-untyped-def]
+app/utils/time_utils.py:8: error: X | Y syntax for unions requires Python 3.10  [syntax]
+app/utils/time_utils.py:10: error: Returning Any from function declared to return "str"  [no-any-return]
+app/utils/time_utils.
+```
+
+#### ✅ Pytest
+**Status:** pass
+
+**Details:**
+```
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/alireza/SarlakBot_v6_Full/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/alireza/SarlakBot_v6_Full
+configfile: pyproject.toml
+plugins: anyio-4.11.0
+collecting ... collected 6 items
+
+tests/test_basic.py::test_imports PASSED                                 [ 16%]
+tests/test_basic.py::test_config_exists PASSED                           [ 33%]
+tests/test_basic.py::test_basic_functionality PASSED                     [ 50%]
+tests/test_basic.py::test_unit_example PASSED                            [ 66%]
+tests/test_basic.py::test_integration_example PASSED                     [ 83%]
+tests/test_basic.py::test_slow_example PASSED                            [100%]
+
+============================== 6 passed in 0.07s ===============================
+
+```
+
+### 🔒 Security Analysis
+
+**Status:** warn
+
+**Security Issues Found:**
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/db.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/keyboards.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/bot.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/utils/i18n.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/referrals.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/league.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/missions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/profile.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/flashcards.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/start.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/admin.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/app/handlers/report.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy_extensions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/typing_extensions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/metadata.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/version.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/_parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/requirements.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/markers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/_tokenizer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/specifiers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/_elffile.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/licenses/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/licenses/_spdx.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_api.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_trace.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_models.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/http_proxy.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/socks_proxy.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/http_proxy.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/socks_proxy.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_receivebuffer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_abnf.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_state.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_headers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_connection.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/build.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/common.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/ll_builder.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/prebuildvisitor.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/env_class.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/format_str_tokenizer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/statement.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/builder.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/classdef.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/specialize.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/for_helpers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/expression.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/function.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/match.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/analysis/dataflow.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/test_annotate.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/test_analysis.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/test_emitclass.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/testutil.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/test_serialization.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/rtypes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/pprint.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/class_ir.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/func_ir.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitclass.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitmodule.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emit.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitwrapper.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/primitives/dict_ops.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/primitives/generic_ops.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/transform/refcount.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/transform/lower.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/dotenv/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/dotenv/parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pytokens/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pytokens/cli.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pytokens/__main__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/console.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/scanner.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatter.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/token.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/style.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/util.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/sphinxext.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/__main__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/filters/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/soong.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/c_like.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ampl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/graphics.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/hdl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ecl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/futhark.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ada.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_postgres_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/console.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/mime.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/capnproto.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/nimrod.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rebol.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/objective.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/sas.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/phix.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/graphql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/usd.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/crystal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/verifpal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_sourcemod_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ldap.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/verification.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/erlang.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_sql_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/apdlexer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/slash.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/boa.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/elpi.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/maxima.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/chapel.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/configs.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/clean.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/mojo.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/jslt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ul4.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/numbair.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/qvt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tablegen.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/inferno.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tlb.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/nix.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/wren.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/parasail.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/smithy.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/graphviz.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/r.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/pawn.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dns.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/maple.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/idl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/iolang.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/amdgpu.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dsls.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/supercollider.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/comal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/solidity.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_scilab_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_lilypond_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/hare.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/lisp.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/j.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/blueprint.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/mosel.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_googlesql_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_vbscript_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_openedge_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/smalltalk.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/spice.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/monte.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_luau_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/webmisc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/teal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/c_cpp.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/perl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/robotframework.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/textfmts.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/jsonnet.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/cplint.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/jsx.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/prolog.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rnc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/wowtoc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_julia_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/algebra.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/typoscript.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/automation.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/sieve.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/esoteric.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/graph.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/html.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_php_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/shell.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/scripting.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/gsql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/gdscript.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ambient.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/arrow.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/oberon.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_stata_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/floscript.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/resource.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/d.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ruby.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/other.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/pony.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/matlab.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/felix.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tnt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_vim_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/freefem.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/thingsdb.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/teraterm.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/parsers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/jmespath.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/carbon.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/theorem.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/compiled.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/int_fiction.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_cocoa_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ncl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/vyper.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/lilypond.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/markup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/pddl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_asy_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/igor.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ml.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/savi.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/bqn.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tls.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/templates.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/forth.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/css.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/asm.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/roboconf.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_lasso_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/pascal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/csound.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/typst.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ptx.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/sgf.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/kusto.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/webassembly.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/procfile.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/codeql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/textedit.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/installers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/business.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tcl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/minecraft.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/vip.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/mips.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/meson.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/basic.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_stan_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/prql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/eiffel.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/scdoc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dax.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rdf.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/gleam.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/email.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/sophia.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/modula2.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/nit.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/actionscript.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/qlik.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/apl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_cl_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_mql_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/srcinfo.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rego.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/archetype.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/python.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_csound_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/factor.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dalvik.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/go.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/berry.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/unicon.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_usd_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/cddl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dylan.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/make.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/diff.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/xorg.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/trafficscript.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/kuin.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/jvm.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/smv.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tact.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/promql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/php.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/sql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/x10.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/json5.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_mapping.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/gcodelexer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/praat.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/lean.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/bibtex.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/whiley.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/q.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/snobol.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_mysql_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/webidl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rita.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/haskell.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/testing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/fortran.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/modeling.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/arturo.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/varnish.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/elm.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/asc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/javascript.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ooc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/bdd.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/julia.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/hexdump.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/foxpro.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/stata.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/zig.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/grammar_notation.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/bare.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/openscad.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dotnet.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/fantom.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/special.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/yang.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/fift.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ezhil.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ride.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_scheme_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/devicetree.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/macaulay2.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/urbi.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/haxe.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/func.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/data.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_ada_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/yara.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/pointless.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/asn1.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_tsql_builtins.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/wgsl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rust.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/terminal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/html.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/irc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/other.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/terminal256.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/rtf.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/svg.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/bbcode.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/pangomarkup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/_mapping.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/groff.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/latex.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/sas.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/material.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/friendly_grayscale.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/pastie.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/onedark.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/inkpot.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/xcode.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/gruvbox.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/monokai.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/tango.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/friendly.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/staroffice.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/paraiso_dark.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/solarized.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/algol_nu.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/gh_dark.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/native.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/colorful.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/lilypond.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/igor.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/zenburn.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/bw.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/emacs.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/dracula.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/vs.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/default.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/paraiso_light.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/lovelace.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/stata_dark.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/vim.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/borland.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/coffee.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/murphy.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/lightbulb.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/fruity.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/abap.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/rainbow_dash.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/manni.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/autumn.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/rrt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/perldoc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/trac.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/algol.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/arduino.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/nord.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/styles/stata_light.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pytest/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pathspec/util.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/_winconsole.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/types.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/formatting.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/termui.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/_compat.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/decorators.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/exceptiongroup/_formatting.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/exceptiongroup/_catch.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/to_thread.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/from_thread.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/lowlevel.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/pytest_plugin.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/abc/_eventloop.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/abc/_tasks.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/abc/_testing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_backends/_trio.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_backends/_asyncio.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_synchronization.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_eventloop.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_typedattr.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_asyncio_selector_thread.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_exceptions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/streams/memory.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/pyproject.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cache.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/exceptions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/self_outdated_check.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/network/download.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/network/cache.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/logging.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/setuptools_build.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/hashes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/wheel.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/unpacking.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/models/link.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/models/direct_url.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/models/target_python.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/models/pylock.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/models/scheme.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/cmdoptions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/index_command.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/spinners.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/operations/check.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/operations/freeze.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/operations/prepare.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/req_set.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/req_uninstall.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/constructors.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/legacy/resolver.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/resolvelib/provider.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/resolvelib/factory.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/vcs/mercurial.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/vcs/versioncontrol.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/vcs/subversion.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/locations/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/locations/_sysconfig.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/locations/_distutils.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/index/collector.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/index/package_finder.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/show.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/list.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/completion.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/search.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/install.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/metadata/_json.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/metadata/pkg_resources.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/metadata/base.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/metadata/importlib/_dists.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/metadata.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/version.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/_parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/requirements.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/markers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/_tokenizer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/specifiers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/_elffile.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/licenses/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/licenses/_spdx.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/truststore/_api.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/truststore/_windows.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/msgpack/fallback.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/dependency_groups/_implementation.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/dependency_groups/__main__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/console.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/scanner.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/formatter.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/token.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/style.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/util.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/sphinxext.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/__main__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/filters/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexers/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexers/python.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexers/_mapping.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/formatters/_mapping.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/cachecontrol/controller.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/cachecontrol/cache.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/cachecontrol/caches/file_cache.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/cachecontrol/caches/redis_cache.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/cookies.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/auth.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/hooks.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/models.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/api.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/structures.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/help.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/adapters.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/tomli/_types.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/tomli/_parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/logging.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/measure.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_emoji_codes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/style.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/default_styles.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/emoji.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/layout.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/containers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_emoji_replace.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/traceback.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/palette.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/markup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/repr.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/pretty.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_inspect.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/text.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/highlighter.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_spinners.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/live.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/syntax.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/prompt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/ansi.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/progress.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/spinner.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/json.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/scope.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/tomli_w/_writer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/filepost.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/fields.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/request.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/poolmanager.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/connection.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/_collections.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/connectionpool.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/wait.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/request.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/url.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/ssl_match_hostname.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/securetransport.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/socks.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/pyopenssl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/ntlmpool.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/_securetransport/low_level.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/_securetransport/bindings.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/packages/six.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/packages/backports/weakref_finalize.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/resolvelib/providers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/resolvelib/structs.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/resolvelib/resolvers/abstract.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/resolvelib/resolvers/resolution.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/tomli/_types.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/tomli/_parser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_main.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_urls.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_multipart.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_content.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_client.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_urlparse.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_models.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_auth.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_utils.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_transports/default.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_transports/wsgi.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/sniffio/_tests/test_sniffio.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/fastparse.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/evalexpr.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/build.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/options.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/message_registry.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/suggestions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/patterns.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/errorcodes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_namedtuple.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkmember.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/type_visitor.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkstrformat.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/inspections.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubinfo.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/treetransform.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/lookup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/graph_utils.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/memprofile.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/meet.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/types.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/literals.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/join.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/typeanal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubgenc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_typeddict.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_enum.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_main.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/copytype.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/dmypy_util.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/dmypy_server.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/messages.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubdoc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugin.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/traverser.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/renaming.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/solve.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/constraints.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/binder.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/errors.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubutil.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/metastore.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/nodes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkexpr.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/strconv.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/__main__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/report.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/fixup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checker.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkpattern.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/subtypes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/argmap.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/find_sources.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubtest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/dmypy/client.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/teststubgen.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testtypegen.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testinfer.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testsemanal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testtypes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/teststubtest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testmerge.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testtransform.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/data.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testcheck.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/functools.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/default.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/dataclasses.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/attrs.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/update.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/astdiff.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/aststrip.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/deps.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/astmerge.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_ownedgift.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_poll.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/error.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_keyboardbutton.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_callbackquery.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_telegramobject.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_bot.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/constants.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_keyboardbuttonrequest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_copytextbutton.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chat.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_shared.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_message.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_gifts.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_webappdata.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_business.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_sentwebappmessage.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_paidmedia.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_replykeyboardremove.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_keyboardbuttonpolltype.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/helpers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_choseninlineresult.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_replykeyboardmarkup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_checklists.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatmemberupdated.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_user.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_loginurl.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_utils/types.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_utils/markup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_utils/repr.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_utils/entities.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_passport/credentials.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_passport/passportdata.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_passport/encryptedpassportelement.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultvoice.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultarticle.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcontact.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultphoto.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultaudio.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinekeyboardmarkup.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inputinvoicemessagecontent.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequery.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcacheddocument.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultvideo.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultmpeg4gif.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedgif.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedvideo.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inputtextmessagecontent.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultdocument.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedsticker.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedmpeg4gif.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedaudio.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinekeyboardbutton.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultvenue.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultlocation.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultgif.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultgame.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedphoto.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultcachedvoice.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_jobqueue.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_applicationbuilder.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_callbackdatacache.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_extbot.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_baseratelimiter.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_callbackcontext.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_defaults.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_basepersistence.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_application.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_picklepersistence.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_aioratelimiter.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_dictpersistence.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/filters.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_utils/trackingdict.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_utils/webhookhandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_utils/networkloop.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_utils/types.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/conversationhandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/prefixhandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/inlinequeryhandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/callbackqueryhandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/commandhandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_games/game.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_payment/shippingquery.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_payment/precheckoutquery.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/request/_baserequest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/request/_requestparameter.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/request/_requestdata.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/request/_httpxrequest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/_inputstorycontent.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/sticker.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/file.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/inputsticker.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pygram.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pytree.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/token.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/pgen.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/grammar.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/conv.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/parse.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/driver.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/tokenize.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pluggy/_tracing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pluggy/_callers.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pluggy/_hooks.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pluggy/_manager.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blackd/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/package_index.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/config.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/sandbox.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/launch.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/extension.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/monkey.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/build_meta.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/msvc.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/dist.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/ordered_set.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/pyparsing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/packaging/tags.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/packaging/version.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/more_itertools/more.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/more_itertools/recipes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/bdist_egg.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/upload_docs.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/build_py.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/build_clib.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/egg_info.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/setopt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/ccompiler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/archive_util.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/config.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/fancy_getopt.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/file_util.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/core.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/extension.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/text_file.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/errors.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/dist.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/bcppcompiler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/upload.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/register.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_wininst.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/build_py.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_dumb.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/sdist.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/build_scripts.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_rpm.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/install.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_msi.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/pyparsing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/packaging/tags.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/packaging/version.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/extras.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/errorcodes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/tz.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/extensions.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/errors.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/sql.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/pool.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/jdatetime/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/iniconfig/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/parsing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/handle_ipynb_magics.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/brackets.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/lines.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/mode.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/ranges.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/debug.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/trans.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/nodes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/linegen.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/strings.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/comments.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/skipping.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/logging.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/unittest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/pastebin.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/compat.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/terminal.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/recwarn.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/stash.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/debugging.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/python_api.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/unraisableexception.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/capture.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/hookspec.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/timing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/faulthandler.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/stepwise.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/junitxml.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/python.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/reports.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/doctest.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/raises.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/nodes.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/threadexception.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/main.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/legacypath.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/setupplan.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/fixtures.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/config/compat.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/config/argparsing.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/mark/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/mark/structures.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/mark/expression.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_code/code.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_code/source.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/assertion/__init__.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/assertion/rewrite.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_io/saferepr.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_io/pprint.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_py/error.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/scripts/generate_audit_report.py
+- Potential hardcoded secret in /Users/alireza/SarlakBot_v6_Full/scripts/continuous_monitor.py
+
+### ⚡ Performance Analysis
+
+**Status:** warn
+
+**Performance Issues Found:**
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/typing_extensions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/tags.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/metadata.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/version.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/_parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/markers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/specifiers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/packaging/licenses/_spdx.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_models.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/http_proxy.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/http2.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/socks_proxy.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/http11.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_async/connection_pool.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/http_proxy.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/http2.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/socks_proxy.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/http11.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpcore/_sync/connection_pool.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_state.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_events.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_headers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/h11/_connection.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/build.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/annotate.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/ll_builder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/mapper.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/env_class.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/statement.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/builder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/classdef.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/generator.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/visitor.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/specialize.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/for_helpers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/expression.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/prepare.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/function.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/irbuild/match.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/analysis/ircheck.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/analysis/attrdefined.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/analysis/dataflow.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/test_run.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/test/test_emitfunc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/rtypes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/pprint.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/ops.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/class_ir.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/ir/func_ir.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitclass.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/literals.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitmodule.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitfunc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emit.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/codegen/emitwrapper.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/primitives/misc_ops.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/primitives/registry.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/primitives/str_ops.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/primitives/generic_ops.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/transform/refcount.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypyc/transform/ir_transform.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/dotenv/main.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pytokens/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/cmdline.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/unistring.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexer.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/filters/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/c_like.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/graphics.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/hdl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_postgres_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rebol.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/objective.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_qlik_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/phix.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/crystal.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_sourcemod_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/erlang.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/apdlexer.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/configs.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/mojo.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ul4.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_css_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/idl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dsls.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_scilab_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_lilypond_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/lisp.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_googlesql_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_openedge_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/webmisc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/c_cpp.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/perl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/robotframework.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/textfmts.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/prolog.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_julia_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/automation.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/esoteric.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/html.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_php_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/shell.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/scripting.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_stata_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ruby.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/matlab.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tnt.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_vim_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/freefem.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/parsers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/theorem.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/int_fiction.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_cocoa_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ncl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/markup.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_asy_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/igor.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/ml.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/templates.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/css.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/asm.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_lasso_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/pascal.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/csound.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/installers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/business.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/minecraft.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/basic.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_stan_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/rdf.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/modula2.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/actionscript.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_cl_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_mql_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/archetype.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/python.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_csound_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/factor.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/unicon.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dylan.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/kuin.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/jvm.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/tact.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/php.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/sql.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_mapping.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/praat.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_mysql_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/webidl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/haskell.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/testing.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/fortran.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/modeling.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/arturo.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/javascript.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/julia.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/foxpro.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/dotnet.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/fantom.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_scheme_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/macaulay2.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/haxe.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/data.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/_tsql_builtins.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/lexers/wgsl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/html.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/img.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/terminal256.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/rtf.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pygments/formatters/latex.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pathspec/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pathspec/pathspec.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pathspec/patterns/gitwildmatch.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/idna/idnadata.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/idna/core.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/idna/uts46data.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/core.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/types.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/termui.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/utils.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/shell_completion.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/_compat.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/_termui_impl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/testing.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/click/decorators.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/exceptiongroup/_formatting.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/exceptiongroup/_exceptions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/from_thread.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/pytest_plugin.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/abc/_eventloop.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/abc/_sockets.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_backends/_trio.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_backends/_asyncio.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_fileio.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_synchronization.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_tempfile.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/_core/_sockets.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/streams/memory.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/anyio/streams/tls.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/configuration.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cache.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/exceptions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/wheel_builder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/build_env.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/network/auth.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/network/download.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/network/session.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/logging.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/misc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/utils/unpacking.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/models/link.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/cmdoptions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/cli/req_command.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/operations/prepare.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/operations/install/wheel.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/req_install.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/req_uninstall.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/req_file.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/req/constructors.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/legacy/resolver.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/resolvelib/provider.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/resolvelib/factory.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/resolvelib/resolver.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/resolution/resolvelib/candidates.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/vcs/git.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/vcs/versioncontrol.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/vcs/subversion.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/locations/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/index/collector.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/index/package_finder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/configuration.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/list.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/commands/install.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/metadata/pkg_resources.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_internal/metadata/base.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/tags.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/metadata.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/version.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/_parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/markers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/specifiers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/packaging/licenses/_spdx.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/truststore/_api.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/truststore/_macos.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/truststore/_windows.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/msgpack/fallback.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/unistring.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexer.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/filters/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexers/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexers/python.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pygments/lexers/_mapping.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/distlib/compat.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/distlib/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/distlib/resources.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/distlib/scripts.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/distro/distro.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/cachecontrol/controller.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/idna/idnadata.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/idna/core.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/idna/uts46data.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/cookies.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/auth.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/sessions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/models.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/utils.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/requests/adapters.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/tomli/_parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pyproject_hooks/_impl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/logging.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/console.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_emoji_codes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/box.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/color.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/align.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/style.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/layout.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/traceback.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/pretty.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/text.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_spinners.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/live.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/syntax.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/table.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/prompt.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/segment.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/progress.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_cell_widths.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/_win32_console.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/rich/panel.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/poolmanager.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/response.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/connection.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/_collections.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/connectionpool.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/timeout.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/ssl_.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/retry.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/util/url.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/securetransport.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/pyopenssl.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/appengine.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/_securetransport/low_level.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/contrib/_securetransport/bindings.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/urllib3/packages/six.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/pkg_resources/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/resolvelib/resolvers/resolution.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/platformdirs/unix.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/platformdirs/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pip/_vendor/platformdirs/windows.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/tomli/_parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_decoders.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_main.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_urls.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_api.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_client.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_urlparse.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_models.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_auth.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/httpx/_transports/default.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/erasetype.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/fastparse.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/build.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/options.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/message_registry.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/expandtype.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubgen.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/suggestions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/errorcodes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/config_parser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_namedtuple.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkmember.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/modulefinder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/ipc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/type_visitor.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkstrformat.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/inspections.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubinfo.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/treetransform.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/meet.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_newtype.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/types.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/join.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/typeanal.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubgenc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_typeddict.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_enum.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/partially_defined.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/visitor.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checker_shared.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/reachability.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_main.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/typeops.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stats.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/dmypy_server.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/messages.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_typeargs.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubdoc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugin.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/traverser.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/renaming.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/applytype.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/solve.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/constraints.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/binder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/errors.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubutil.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/nodes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/main.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkexpr.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal_shared.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/typestate.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/strconv.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/report.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/fixup.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checker.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/fscache.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/semanal.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/checkpattern.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/subtypes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/argmap.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/stubtest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/dmypy/client.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testsolve.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testmodulefinder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testfinegrained.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/test_find_sources.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/typefixture.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/teststubgen.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testinfer.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testtypes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/teststubtest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testsubtypes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/helpers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/data.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/test/testcheck.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/enums.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/functools.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/default.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/common.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/dataclasses.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/attrs.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/plugins/ctypes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/update.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/astdiff.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/aststrip.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/deps.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/mypy/server/astmerge.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatboost.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_ownedgift.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_poll.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatfullinfo.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatmember.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_callbackquery.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatbackground.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_storyarea.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_telegramobject.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_bot.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/constants.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_keyboardbuttonrequest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chat.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_shared.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_uniquegift.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_message.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_gifts.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatadministratorrights.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_messageentity.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_giveaway.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_business.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_botcommandscope.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_reply.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_paidmedia.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_chatpermissions.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_replykeyboardmarkup.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_checklists.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_suggestedpost.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_messageorigin.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_user.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_update.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_utils/datetime.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_passport/credentials.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_passport/passportelementerrors.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_passport/encryptedpassportelement.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inputinvoicemessagecontent.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinekeyboardbutton.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_inline/inlinequeryresultlocation.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_jobqueue.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_applicationbuilder.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_callbackdatacache.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_extbot.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_callbackcontext.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_defaults.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_basepersistence.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_application.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_picklepersistence.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_aioratelimiter.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_dictpersistence.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/filters.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/conversationhandler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/ext/_handlers/commandhandler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_payment/stars/transactionpartner.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/request/_baserequest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/request/_httpxrequest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/sticker.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/file.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/telegram/_files/inputmedia.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pytree.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/pgen.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/parse.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/blib2to3/pgen2/driver.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pluggy/_hooks.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pluggy/_manager.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/package_index.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/config.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/sandbox.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/build_meta.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/msvc.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/dist.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/ordered_set.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/pyparsing.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/packaging/tags.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/packaging/version.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/packaging/specifiers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/more_itertools/more.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_vendor/more_itertools/recipes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/bdist_egg.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/build_ext.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/easy_install.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/command/egg_info.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/_msvccompiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/unixccompiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/filelist.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/ccompiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/msvc9compiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/cmd.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/version.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/fancy_getopt.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/cygwinccompiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/extension.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/text_file.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/msvccompiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/sysconfig.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/dist.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/bcppcompiler.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/build_ext.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/config.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/register.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_wininst.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/build_py.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/sdist.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_rpm.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/install.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/setuptools/_distutils/command/bdist_msi.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/appdirs.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/pyparsing.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/packaging/tags.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/packaging/version.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/pkg_resources/_vendor/packaging/specifiers.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/extras.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/errorcodes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/_range.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/psycopg2/sql.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/jdatetime/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/files.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/handle_ipynb_magics.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/brackets.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/lines.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/mode.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/_width_table.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/ranges.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/trans.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/nodes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/linegen.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/strings.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/black/comments.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/skipping.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/logging.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/unittest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/runner.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/compat.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/terminal.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/recwarn.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/tmpdir.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/debugging.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/python_api.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/capture.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/hookspec.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/pytester.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/outcomes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/junitxml.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/python.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/reports.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/doctest.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/raises.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/nodes.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/main.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/monkeypatch.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/legacypath.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/pathlib.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/fixtures.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/cacheprovider.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/config/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/config/argparsing.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/mark/structures.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/mark/expression.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_code/code.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/assertion/util.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/assertion/rewrite.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_io/pprint.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/_pytest/_py/path.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/platformdirs/unix.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/platformdirs/__init__.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/.venv/lib/python3.9/site-packages/platformdirs/windows.py
+- Large file detected: /Users/alireza/SarlakBot_v6_Full/scripts/generate_audit_report.py
+
+### 📚 Documentation Analysis
+
+**Status:** warn
+
+**Documentation Issues Found:**
+- Missing docstrings in app/bot.py
+- Missing docstrings in app/config.py
+- Missing docstrings in app/db.py
+
+## 💡 Recommendations
+
+- 🔧 Run `black .` to fix formatting issues
+- 🔒 Review potential security issues and add proper environment variable handling
+- ⚡ Consider refactoring large files for better maintainability
+- 📚 Add docstrings to improve code documentation
+
+## 🚀 Next Steps
+
+- 📊 Review this audit report thoroughly
+- 🔧 Address any critical issues identified
+- 🧪 Run tests locally before committing
+- 📝 Update documentation if needed
+- 🚀 Deploy only after all checks pass
+
