@@ -31,3 +31,4 @@ expect "$ "
 send "exit\r"
 
 interact
+
