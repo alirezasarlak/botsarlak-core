@@ -21,6 +21,7 @@ directories:
   .github/workflows: "CI/CD pipelines and quality automation"
   docs: "Auto-generated technical documentation and version reports"
   .venv: "Python virtual environment for development"
+  audit-reports: "Generated audit reports and analysis"
 
 # ===========================================================
 # ⚙️ DEVELOPMENT PRINCIPLES
@@ -106,9 +107,9 @@ github_integration:
     - "🧠 Code Quality & Persian Validation"
     - "Test & Deploy Pipeline"
   on_push:
-    - Run: "pre-commit run --all-files"
-    - Run: "pytest -q"
-    - Run: "python scripts/check_persian_text.py $(find src -name '*.py')"
+    - Run: "make automation" (black, ruff, mypy, pytest, audit)
+    - Run: "python scripts/audit_analyzer.py"
+    - Run: "python scripts/generate_audit_report.py"
     - Collect logs, summarize, commit results to `/docs/AUTO_AUDIT_REPORTS/`
   notify:
     - "Telegram Admin: 694245594 (Dr. Alireza Sarlak)"
@@ -123,6 +124,34 @@ loop_process:
   - Step 3: If repeated issues occur → mark as “Recurring Bug Pattern”
   - Step 4: Cursor suggests or applies permanent fixes
   - Step 5: Push changes, regenerate documentation, and close related GitHub issues
+
+# ===========================================================
+# 🔄 AUDIT LOOP CONFIGURATION
+# ===========================================================
+audit_loop:
+  enabled: true
+  continuous_monitoring: true
+  real_time_analysis: true
+  automated_fixes: true
+  report_generation: true
+  
+  triggers:
+    - file_save: "Run quick audit checks"
+    - commit: "Run comprehensive audit analysis"
+    - push: "Generate audit reports and update documentation"
+    - schedule: "Daily comprehensive audit"
+  
+  monitoring:
+    - file_changes: "Real-time detection"
+    - code_quality: "Continuous analysis"
+    - security_checks: "Automated scanning"
+    - performance: "Ongoing monitoring"
+  
+  reports:
+    - audit_results: "JSON format with detailed metrics"
+    - audit_reports: "Markdown format with recommendations"
+    - comprehensive_reports: "Full analysis with next steps"
+    - documentation_updates: "Auto-updated CHANGELOG and VERSION_HISTORY"
 
 # ===========================================================
 # ✅ END OF CONFIG

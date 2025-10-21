@@ -3,6 +3,7 @@ def progress_bar(percent: float, width: int = 12) -> str:
     filled = int(percent * width)
     return "█" * filled + "░" * (width - filled)
 
+
 def format_profile(u: dict) -> str:
     lines = [
         "👤 پروفایل",
@@ -12,6 +13,7 @@ def format_profile(u: dict) -> str:
         f"امتیاز: {u.get('points',0)}",
     ]
     return "\n".join(lines)
+
 
 def format_board(rows: list[dict]) -> str:
     out = ["🏆 لیگ — ۱۰ نفر برتر"]

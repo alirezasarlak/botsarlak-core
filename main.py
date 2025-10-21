@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
-from app.utils.logger import setup_logging, logger
-from app.db import run_migrations
 from app.bot import build_application
+from app.db import run_migrations
+from app.utils.logger import logger, setup_logging
 
 if __name__ == "__main__":
     setup_logging()

@@ -1,6 +1,9 @@
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv()
+
 
 class Config:
     BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -15,7 +18,13 @@ class Config:
 
     @classmethod
     def validate(cls):
-        missing = [k for k in ["BOT_TOKEN","ADMIN_ID","DB_NAME","DB_USER","DB_PASSWORD"] if not os.getenv(k)]
+        missing = [
+            k
+            for k in ["BOT_TOKEN", "ADMIN_ID", "DB_NAME", "DB_USER", "DB_PASSWORD"]
+            if not os.getenv(k)
+        ]
         if missing:
             raise ValueError(f"Missing env vars: {missing}")
+
+
 Config.validate()

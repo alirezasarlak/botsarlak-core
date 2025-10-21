@@ -23,6 +23,7 @@ TEXTS = {
     "badge_earned": "🏅 نشان جدید گرفتی: {badge}",
 }
 
+
 def t(key, **kwargs):
     s = TEXTS.get(key, key)
     return s.format(**kwargs) if kwargs else s
