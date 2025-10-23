@@ -1008,6 +1008,63 @@ class ReportHandler:
             self.logger.error(f"Error showing smart recommendations: {e}")
             raise
     
+    async def show_daily_report(self, query) -> None:
+        """Show daily report for user"""
+        try:
+            user_id = query.from_user.id
+            
+            # Get today's study statistics
+            today = date.today()
+            stats = await report_service.get_daily_statistics(user_id, today)
+            
+            if not stats:
+                text = """
+📊 **گزارش روزانه**
+
+❌ **هیچ مطالعه‌ای امروز ثبت نشده**
+
+💡 **نکته:** برای ثبت مطالعه، از دکمه "ثبت جلسه مطالعه" استفاده کنید.
+                """
+            else:
+                text = f"""
+📊 **گزارش روزانه - {today.strftime('%Y/%m/%d')}**
+
+⏰ **زمان مطالعه:** {stats.total_minutes} دقیقه
+📚 **تعداد جلسات:** {stats.session_count}
+🎯 **موضوعات:** {', '.join(stats.subjects) if stats.subjects else 'نامشخص'}
+
+📈 **پیشرفت امروز:**
+• زمان مطالعه: {stats.total_minutes} دقیقه
+• جلسات تکمیل شده: {stats.session_count}
+• امتیاز کسب شده: {stats.points_earned}
+                """
+            
+            keyboard = [
+                [
+                    InlineKeyboardButton("📝 ثبت جلسه مطالعه", callback_data="report_log_study"),
+                    InlineKeyboardButton("📊 آمار کامل", callback_data="report_statistics")
+                ],
+                [
+                    InlineKeyboardButton("📅 گزارش هفتگی", callback_data="report_weekly"),
+                    InlineKeyboardButton("📈 نمودار پیشرفت", callback_data="report_progress")
+                ],
+                [
+                    InlineKeyboardButton("🔙 بازگشت", callback_data="go_home"),
+                    InlineKeyboardButton("🏠 خانه", callback_data="menu_main")
+                ]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            await query.edit_message_text(
+                text,
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
+            
+        except Exception as e:
+            self.logger.error(f"Error showing daily report: {e}")
+            await query.edit_message_text("❌ خطا در نمایش گزارش روزانه")
+    
     def _calculate_overall_score(self, stats: StudyStatistics) -> int:
         """Calculate overall study score"""
         try:

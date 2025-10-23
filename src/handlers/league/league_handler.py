@@ -582,6 +582,70 @@ class LeagueHandler:
             self.logger.error(f"Error checking if user can join league: {e}")
             return False
     
+    async def show_leaderboard(self, query) -> None:
+        """Show league leaderboard"""
+        try:
+            user_id = query.from_user.id
+            
+            # Get current league standings
+            standings = await league_service.get_current_standings(user_id)
+            
+            if not standings:
+                text = """
+🏆 **جدول رتبه‌بندی لیگ**
+
+❌ **هیچ رقابتی در حال انجام نیست**
+
+💡 **نکته:** برای شرکت در رقابت، ابتدا مدتی مطالعه کنید.
+                """
+            else:
+                text = """
+🏆 **جدول رتبه‌بندی لیگ**
+
+📊 **رتبه‌بندی فعلی:**
+                """
+                
+                for i, participant in enumerate(standings[:10], 1):
+                    if i == 1:
+                        medal = "🥇"
+                    elif i == 2:
+                        medal = "🥈"
+                    elif i == 3:
+                        medal = "🥉"
+                    else:
+                        medal = f"{i}."
+                    
+                    text += f"""
+{medal} **{participant.get('name', 'نامشخص')}**
+   ⭐ {participant.get('points', 0)} امتیاز | ⏱️ {participant.get('study_time', 0)} دقیقه
+                    """
+            
+            keyboard = [
+                [
+                    InlineKeyboardButton("📊 آمار من", callback_data="league_my_stats"),
+                    InlineKeyboardButton("🏆 جوایز", callback_data="league_rewards")
+                ],
+                [
+                    InlineKeyboardButton("📅 تقویم رقابت", callback_data="league_calendar"),
+                    InlineKeyboardButton("🎯 چالش‌ها", callback_data="league_challenges")
+                ],
+                [
+                    InlineKeyboardButton("🔙 بازگشت", callback_data="go_home"),
+                    InlineKeyboardButton("🏠 خانه", callback_data="menu_main")
+                ]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            await query.edit_message_text(
+                text,
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
+            
+        except Exception as e:
+            self.logger.error(f"Error showing leaderboard: {e}")
+            await query.edit_message_text("❌ خطا در نمایش جدول رتبه‌بندی")
+    
     async def _go_home(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Go to main menu"""
         try:

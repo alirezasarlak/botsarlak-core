@@ -36,9 +36,11 @@ class StartHandler:
             
             # Register callback handlers
             application.add_handler(CallbackQueryHandler(self.start_profile_callback, pattern="^start_profile$"))
+            application.add_handler(CallbackQueryHandler(self.about_sarlak_callback, pattern="^about_sarlak$"))
             application.add_handler(CallbackQueryHandler(self.go_home_callback, pattern="^go_home$"))
             application.add_handler(CallbackQueryHandler(self.show_profile_callback, pattern="^show_profile$"))
             application.add_handler(CallbackQueryHandler(self.edit_profile_callback, pattern="^edit_profile$"))
+            
             
             self.logger.info("✅ Start command handler registered successfully")
             
@@ -87,9 +89,9 @@ class StartHandler:
             keyboard = [
                 [InlineKeyboardButton("👤 پروفایل من", callback_data="show_profile")],
                 [InlineKeyboardButton("✏️ ویرایش پروفایل", callback_data="edit_profile")],
-                [InlineKeyboardButton("📊 گزارش روزانه", callback_data="daily_report")],
-                [InlineKeyboardButton("🏆 لیگ", callback_data="league")],
-                [InlineKeyboardButton("❓ سوال و جواب", callback_data="qa")]
+                [InlineKeyboardButton("📊 گزارش روزانه", callback_data="menu_reports")],
+                [InlineKeyboardButton("🏆 لیگ", callback_data="menu_competition")],
+                [InlineKeyboardButton("❓ سوال و جواب", callback_data="menu_qa")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -114,25 +116,32 @@ class StartHandler:
         """Show welcome message for new users"""
         try:
             keyboard = [
-                [InlineKeyboardButton("🚀 شروع ساخت پروفایل", callback_data="start_profile")],
+                [InlineKeyboardButton("🌟 شروع سفر کیهانی", callback_data="start_profile")],
+                [InlineKeyboardButton("ℹ️ درباره سارلاک", callback_data="about_sarlak")],
                 [InlineKeyboardButton("🏠 منوی اصلی", callback_data="go_home")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             welcome_text = """
-🌌 به سارلاک خوش آمدید!
+🌌✨ **به آکادمی کیهانی سرلک خوش آمدید!** ✨🌌
 
-سلام! من دستیار هوشمند شما برای سفر کیهانی یادگیری هستم! 🚀
+🚀 **سلام! من دستیار هوشمند شما هستم** 🤖
 
-برای شروع، ابتدا پروفایل خود را بسازید تا بتوانم بهتر به شما کمک کنم.
+🎯 **آکادمی سرلک** جایی است که:
+• 📚 یادگیری را به یک ماجراجویی تبدیل می‌کند
+• 🏆 با سیستم امتیازدهی و لیگ، انگیزه شما را بالا می‌برد  
+• 🎮 با گیمیفیکیشن، مطالعه را سرگرم‌کننده می‌کند
+• 🤖 با هوش مصنوعی، راهنمای شخصی شما می‌شود
 
-آماده‌اید که سفر کیهانی یادگیری را شروع کنیم؟ ✨
+✨ **برای شروع این سفر شگفت‌انگیز، ابتدا پروفایل خود را بسازید**
+
+آماده‌اید که این ماجراجویی کیهانی را شروع کنیم؟ 🌟
             """.strip()
             
             await update.message.reply_text(
                 welcome_text,
                 reply_markup=reply_markup,
-                parse_mode='HTML'
+                parse_mode='Markdown'
             )
             
         except Exception as e:
@@ -146,10 +155,16 @@ class StartHandler:
             query = update.callback_query
             await query.answer()
             
-            # Start profile creation conversation
+            # Start profile creation conversation with progress indicator
             await query.edit_message_text(
-                "🚀 عالی! بیایید پروفایل شما را بسازیم.\n\nلطفا نام کامل خود را وارد کنید:",
-                reply_markup=None
+                "🌟 **شروع سفر کیهانی!** 🌟\n\n"
+                "📋 **مرحله 1 از 4: اطلاعات شخصی**\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                "🔸 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 25%\n\n"
+                "👤 لطفا نام کامل خود را وارد کنید:\n"
+                "💡 *مثال: علی احمدی*",
+                reply_markup=None,
+                parse_mode='Markdown'
             )
             
             # Set conversation state
@@ -158,6 +173,57 @@ class StartHandler:
         except Exception as e:
             self.logger.error(f"❌ Start profile callback failed: {e}")
             await self._send_error_message(update, "مشکلی در شروع ساخت پروفایل پیش آمد.")
+    
+    @safe_async_handler
+    async def about_sarlak_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Handle about sarlak callback"""
+        try:
+            query = update.callback_query
+            await query.answer()
+            
+            about_text = """
+🌌 **درباره آکادمی کیهانی سرلک** 🌌
+
+🚀 **ماموریت ما:**
+تبدیل یادگیری به یک ماجراجویی کیهانی!
+
+✨ **ویژگی‌های منحصر به فرد:**
+
+🎯 **سیستم گیمیفیکیشن پیشرفته:**
+• 🏆 لیگ و رقابت با سایر دانش‌آموزان
+• 🎮 مأموریت‌های روزانه و هفتگی
+• 🏅 نشان‌ها و دستاوردهای ویژه
+• 📊 نمودار پیشرفت شخصی
+
+🤖 **هوش مصنوعی هوشمند:**
+• 🧠 راهنمای شخصی برای هر دانش‌آموز
+• 📚 پیشنهاد برنامه مطالعه بر اساس نقاط ضعف
+• 🎯 تحلیل عملکرد و ارائه راهکار
+
+📱 **امکانات کامل:**
+• 📝 گزارش‌گیری هوشمند از مطالعه
+• 🧠 فلش‌کارت‌های هوشمند
+• 📊 آمار و نمودارهای پیشرفت
+• 🎁 سیستم دعوت و پاداش
+
+🌟 **آماده‌اید که این سفر کیهانی را شروع کنید؟**
+            """.strip()
+            
+            keyboard = [
+                [InlineKeyboardButton("🌟 شروع سفر کیهانی", callback_data="start_profile")],
+                [InlineKeyboardButton("🔙 بازگشت", callback_data="go_home")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            await query.edit_message_text(
+                about_text,
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
+            
+        except Exception as e:
+            self.logger.error(f"❌ About sarlak callback failed: {e}")
+            await self._send_error_message(update, "مشکلی در نمایش اطلاعات پیش آمد.")
     
     @safe_async_handler
     async def go_home_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -246,9 +312,9 @@ class StartHandler:
         keyboard = [
             [InlineKeyboardButton("👤 پروفایل من", callback_data="show_profile")],
             [InlineKeyboardButton("✏️ ویرایش پروفایل", callback_data="edit_profile")],
-            [InlineKeyboardButton("📊 گزارش روزانه", callback_data="daily_report")],
-            [InlineKeyboardButton("🏆 لیگ", callback_data="league")],
-            [InlineKeyboardButton("❓ سوال و جواب", callback_data="qa")]
+            [InlineKeyboardButton("📊 گزارش روزانه", callback_data="menu_reports")],
+            [InlineKeyboardButton("🏆 لیگ", callback_data="menu_competition")],
+            [InlineKeyboardButton("❓ سوال و جواب", callback_data="menu_qa")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -289,6 +355,7 @@ class StartHandler:
             parse_mode='HTML'
         )
     
+
     async def _send_error_message(self, update: Update, message: str) -> None:
         """Send error message to user"""
         try:
@@ -302,3 +369,4 @@ class StartHandler:
 
 # Global instance
 start_handler = StartHandler()
+
