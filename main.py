@@ -35,6 +35,7 @@ from src.handlers.report.report_handler import ReportHandler
 from src.handlers.start_handler import start_handler
 from src.handlers.profile_creation_handler import profile_creation_handler
 from src.utils.logging import get_logger, setup_logging
+from src.modules.gamification.integration import GamificationIntegration
 
 # from src.monitoring.system_monitor import system_monitor
 
@@ -68,6 +69,9 @@ class SarlakBot:
         self.report_handler = ReportHandler()
         self.league_handler = LeagueHandler()
         self.ai_coach_integration = ai_coach_integration
+        
+        # Initialize gamification system
+        self.gamification_integration = GamificationIntegration()
 
     async def initialize(self) -> None:
         """Initialize all bot components"""
@@ -84,6 +88,9 @@ class SarlakBot:
 
             # Setup AI Coach system
             await self.ai_coach_integration.setup_ai_coach_system()
+            
+            # Initialize gamification system
+            await self.gamification_integration.initialize()
 
             # Create Telegram application with persistence
             from telegram.ext import PicklePersistence
@@ -100,8 +107,10 @@ class SarlakBot:
             # Register handlers
             await self._register_handlers()
 
-            # Start health server in background (disabled for now)
-            # asyncio.create_task(start_health_server())
+            # Start health server in background
+            from app.health import setup_health_server
+            asyncio.create_task(setup_health_server())
+            self.logger.info("🏥 Health server started on port 8080")
 
             # Start system monitoring (disabled for now - requires psutil)
             # asyncio.create_task(system_monitor.start_monitoring(interval=300))  # 5 minutes
@@ -164,6 +173,10 @@ class SarlakBot:
             for handler in ai_coach_handlers:
                 self.application.add_handler(handler)
             self.logger.info("✅ AI Coach handlers registered")
+            
+            # Register gamification handlers
+            await self.gamification_integration.register_handlers(self.application)
+            self.logger.info("✅ Gamification handlers registered")
 
             # TODO: Register other handlers as they are implemented
             # - Motivation handler
